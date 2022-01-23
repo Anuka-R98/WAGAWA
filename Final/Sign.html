@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>Sign In</title>
+
+<link rel="shortcut icon" type="image/jpg" href="files/icon.png"/>
+<link rel="stylesheet" href="styleSign.css">
+<link rel="stylesheet" href="Loader.css">
+<script src="https://kit.fontawesome.com/4a8da89201.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div id="preloader"></div>
+  <div id="login-box">
+    <div class = "center">
+      <h1 id="status">Sign In</h1>
+      <form method ="post">
+        <div class ="txt_feild">
+          <input type="text" id="username" name="username" require/>
+          <span></span>
+          <label>Username</label>
+        </div> 
+        <div class ="txt_feild">
+          <input type="text" id="device" name="device" required/>
+          <span></span>
+          <label>Device ID</label>
+        </div> 
+        <div class ="txt_feild">
+          <input type="text" id="email" name="email"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required/>
+          <span></span>
+          <label>E-Mail</label>
+        </div>  
+        <div class ="txt_feild"> 
+          <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, minimum 5 and maximum 10 characters" required/>
+          <span></span>
+          <label>Password</label>
+        </div>
+      <input type="button" id="signUp" name="signup_submit" value="Sign Up" />
+      <div class ="signup_link">
+          Already a Member  <a href ="Login.html">Log into Account</a>
+        </div>
+        <center>
+        <a href="index.html" style="color: inherit" ><i class="fas fa-home fa-2x"></i></a>
+      </center>
+      
+      </form>
+    </div>
+    
+    </div>
+
+    
+</body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js";
+    import { getDatabase, set, ref, } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCONHEJnXApA2wbk54pDqGeXCRIt7md6Ds",
+      authDomain: "new-database-b574a.firebaseapp.com",
+      databaseURL: "https://new-database-b574a-default-rtdb.firebaseio.com",
+      projectId: "new-database-b574a",
+      storageBucket: "new-database-b574a.appspot.com",
+      messagingSenderId: "582282284594",
+      appId: "1:582282284594:web:3fa609f0b7d682198af62b"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth();
+
+  
+
+signUp.addEventListener('click',(e) => {
+
+  var email = document.getElementById('email').value;
+  var password = document.getElementById('password').value;
+  var username = document.getElementById('username').value;
+  var device = document.getElementById('device').value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+     // Signed in 
+      const user = userCredential.user;
+      alert('Account has been created');
+        var std=0;
+      set(ref(database, 'users/' + device),{
+          username: username,
+          email: email,
+          device:device
+      })
+
+      alert('Click Log into Account to proceed')
+	  
+      // Dashboard
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    
+      alert(errorMessage);
+    // ..
+    });
+})
+</script>
+
+<script>
+  var loader = document.getElementById("preloader");
+ window.addEventListener("load", function(){
+  loader.style.display = "none";
+})
+</script>
+
+</html>
+  

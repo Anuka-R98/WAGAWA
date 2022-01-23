@@ -1,0 +1,382 @@
+<html>
+
+<head>
+
+  <title>W A G A W A</title>
+  <link rel="shortcut icon" type="image/jpg" href="files/icon.png"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-circle-progress/1.2.2/circle-progress.min.js"></script>
+  
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script> -->
+  
+  <link rel="stylesheet" href="Dashstyle.css">
+  <link rel="stylesheet" href="Dashstyle2.css">
+  <link rel="stylesheet" href="Loader.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet" />
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
+
+</head>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js";
+  import { getDatabase, set, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-database.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.5.0/firebase-auth.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCONHEJnXApA2wbk54pDqGeXCRIt7md6Ds",
+    authDomain: "new-database-b574a.firebaseapp.com",
+    databaseURL: "https://new-database-b574a-default-rtdb.firebaseio.com",
+    projectId: "new-database-b574a",
+    storageBucket: "new-database-b574a.appspot.com",
+    messagingSenderId: "582282284594",
+    appId: "1:582282284594:web:3fa609f0b7d682198af62b"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth();
+
+  const starCountRef = ref(database, 'users/420630/');
+  onValue(starCountRef, (snapshot) => {
+    let dataSet = snapshot.val();
+    console.log(dataSet.Humidity);
+    // document.getElementById('device-print').innerHTML=dataSet.Humidity;
+
+    // Progress bar settings
+
+    let options = {
+      startAngle: -1.55,
+      size: 150,
+
+    /* Humidity sensor */
+      value: (dataSet.Humidity) / 100,
+      fill: { gradient: ['#0099ff', '#66ffcc'] }
+    }
+    $(".circle .bar").circleProgress(options).on('circle-animation-progress',
+      function (event, progress, stepValue) {
+        $(this).parent().find("span").text(String(stepValue.toFixed(2).substr(2)) + "");
+      });
+
+  });
+
+    /* Temp sensor */
+   onValue(starCountRef, (snapshot) => {
+    let dataSet = snapshot.val();
+    console.log(dataSet.Temperature);
+    // document.getElementById('email-print').innerHTML= dataSet.Temperature;
+
+    $(".js .bar").circleProgress({
+      value: (dataSet.Temperature) / 100,
+    });  
+   });
+
+    /* Light sensor */
+   onValue(starCountRef, (snapshot) => {
+    let dataSet = snapshot.val();
+    console.log(dataSet.light);
+
+    $(".op .bar").circleProgress({
+      value: (dataSet.light) / 100,
+    });
+   });
+
+    /* PH sensor */
+    onValue(starCountRef, (snapshot) => {
+    let dataSet = snapshot.val();
+    console.log(dataSet.ph);
+
+    $(".op1 .bar").circleProgress({
+      value: (dataSet.ph) / 100,
+    });
+
+    /*optional other unknowns, before using them, take them out of this onvalue function*/
+  
+    $(".op2 .bar").circleProgress({
+      value: 0 /*assign new value here*/
+    });
+    $(".op3 .bar").circleProgress({
+      value: 0 /*assign new value here*/
+    });
+
+
+   });
+       /* Temp sensor */
+       onValue(starCountRef, (snapshot) => {
+    let dataSet = snapshot.val();
+    console.log(dataSet.co2);
+    // document.getElementById('email-print').innerHTML= dataSet.Temperature;
+
+    $(".op2 .bar").circleProgress({
+      value: (dataSet.Temperature) / 100,
+    });  
+   });
+
+  /* Update functions */
+
+  FanOn.addEventListener('click', (e) => {
+    console.log("Clicked");
+
+    const device = 420630;
+    update(ref(database, 'users/' + device), {
+      Fan: 1 ,
+
+    })
+      .then(() => {
+        alert('Fans is on !');
+      })
+      .catch((error) => {
+        alert('Failed !');
+      });
+
+  });
+
+  FanOFF.addEventListener('click', (e) => {
+    console.log("Clicked");
+
+    const device = 420630;
+    update(ref(database, 'users/' + device), {
+      Fan: 0 ,
+    })
+      .then(() => {
+        alert('Fans is OFF !');
+      })
+      .catch((error) => {
+        alert('Failed !');
+      });
+
+  });
+
+  LEDOn.addEventListener('click', (e) => {
+    console.log("Clicked");
+
+    const device = 420630;
+    update(ref(database, 'users/' + device), {
+      LED: 1 ,
+    })
+      .then(() => {
+        alert('Light is ON !');
+      })
+      .catch((error) => {
+        alert('Failed !');
+      });
+
+  });
+
+  LEDOff.addEventListener('click', (e) => {
+    console.log("Clicked");
+
+    const device = 420630;
+    update(ref(database, 'users/' + device), {
+      LED: 0 ,
+    })
+      .then(() => {
+        alert('Light is OFF !');
+      })
+      .catch((error) => {
+        alert('Failed !');
+      });
+
+  });
+
+  MotorOn.addEventListener('click', (e) => {
+    console.log("Clicked");
+
+    const device = 420630;
+    update(ref(database, 'users/' + device), {
+      Motor: 1 ,
+    })
+      .then(() => {
+        alert('Motor is ON !');
+      })
+      .catch((error) => {
+        alert('Failed !');
+      });
+
+  });
+
+  MotorOff.addEventListener('click', (e) => {
+    console.log("Clicked");
+
+    const device = 420630;
+    update(ref(database, 'users/' + device), {
+      Motor: 0 ,
+    })
+      .then(() => {
+        alert('Motor is OFF !');
+      })
+      .catch((error) => {
+        alert('Failed !');
+      });
+
+  });
+
+</script>
+
+
+
+<body>
+  <div id="preloader"></div>
+
+  <div class="container">
+
+    <div id="login-box">
+      <div class="center">
+        <!--
+      <p id="email-print"></p>
+      <p id="device-print"></p>
+    -->
+      </div>
+
+      <nav>
+        <img src="files/Logo2.png" class="logo">
+        <ul>
+          <li><a href="index.html" >Home</a></li>
+          <li><a href="Sign.html">Sign In</a></li>
+          <li><a href="Login.html">Log in</a></li>
+          <li><a href="Contact.html">Contact us</a></li>
+        </ul>
+      </nav>
+
+      <br>
+
+      <div class="text_box">
+        <h1>D A S H B O A R D</h1>
+      </div>
+
+
+      <div class="cont">
+        <div class="wrapper">
+
+          <div class="card ">
+            <div class="circle">
+              <div class="bar"></div>
+              <div class="box"><span></span></div>
+            </div>
+            <div class="text">Humidity %</div>
+          </div>
+          <div class="card js">
+            <div class="circle">
+              <div class="bar"></div>
+              <div class="box"><span></span></div>
+            </div>
+            <div class="text">Temperature °C</div>
+          </div>
+          <div class="card op">
+            <div class="circle">
+              <div class="bar"></div>
+              <div class="box"><span></span></div>
+            </div>
+            <div class="text">Light </div>
+          </div>
+          <!-- </div>
+
+        <br>
+
+        <div class="wrapper"> -->
+
+          <div class="card op1">
+            <div class="circle">
+              <div class="bar"></div>
+              <div class="box"><span></span></div>
+            </div>
+            <div class="text">PH level</div>
+          </div>
+          <div class="card op2">
+            <div class="circle">
+              <div class="bar"></div>
+              <div class="box"><span></span></div>
+            </div>
+            <div class="text">Carbon Dioxide (Co2)</div>
+          </div>
+          <div class="card op3">
+            <div class="circle">
+              <div class="bar"></div>
+              <div class="box"><span></span></div>
+            </div>
+            <div class="text">Unvailable</div>
+          </div>
+        </div>
+        <div class="cont2">
+
+          <div class="text_box">
+            <p>Fan Control</p>
+          </div>
+          <div class="row">
+            <button class="button button3" id="FanOn" name="Fan_ON" value="Fan ON">Fan On</button>&nbsp;&nbsp;
+            <button class="button button3" id="FanOFF" name="Fan_OFF" value="Fan OFF">Fan Off</button>
+          </div>
+          <br><br><br>
+
+          <div class="text_box">
+            <p>Light Control</p>
+          </div>
+
+          <div class="row">
+
+            <button class="button button3" id="LEDOn" name="LED_ON" value="LED ON">Light On</button>&nbsp;&nbsp;
+            <button class="button button3" id="LEDOff" name="LED_OFF" value="LED OFF">Light Off</button>
+          </div>
+          <br><br><br>
+
+          <div class="text_box">
+            <p>Motor Control</p>
+          </div>
+
+          <div class="row">
+            <button class="button button3" id="MotorOn" name="Motor_ON" value="Motor ON">Motor On</button>&nbsp;&nbsp;
+            <button class="button button3" id="MotorOff" name="Motor_OFF" value="Motor OFF">Motor Off</button>
+          </div>
+        </div>
+
+      </div>
+      <!-- <input type="submit" id="FanOn" name="Fan_ON" value="Fan ON" />
+      <button>Fan ON</button> -->
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <footer>
+      <div class="footer-content">
+        <h3>W A G A W A</h3>
+        <p>To get any help and support from our customer service, please send us an inquiry through <a href="Contact.html" style="color: inherit; text-decoration: none">contact us</a> section</p>
+        <ul class="socials">
+          <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+          <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+          <li><a href="#"><i class="fa fa-linkedin-square"></i></a></li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>all rights reserved.  2021 &copy;W A G A W A designed by <span>YAKASHI</span></p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- These links are only used to test loader animation by inceasing the traffic !!!!! -->
+  <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/Yf5d_Zx3AaI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/Yf5d_Zx3AaI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/Yf5d_Zx3AaI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   -->
+
+<script>
+    var loader = document.getElementById("preloader");
+   window.addEventListener("load", function(){
+    loader.style.display = "none";
+  })
+</script>
+
+</body>
+
+</html>
